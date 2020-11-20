@@ -28,6 +28,8 @@ formbot_api-*.tar
 .elixir_ls/
 
 rel/
+.hex/
+.mix/
 
 # For non-root user development in docker
 .gnupg

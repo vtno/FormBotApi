@@ -1,21 +1,23 @@
 # FormbotApi
 
-**TODO: Add description**
+An API to trigger FormBot
 
-## Installation
+## Usage
+Requires elixir 1.11.2
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `formbot_api` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:formbot_api, "~> 0.1.0"}
-  ]
-end
+```
+# install all dependencies
+mix deps.get
+# start dev server
+mix run --no-halt
+# run test
+mix test
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/formbot_api](https://hexdocs.pm/formbot_api).
+## Docker
+Run `./start_dev_container.sh` to start a dev container. You can connect to it using `vscode-remote: containers` extension.
 
+## Deployment
+Copy `_build/dev/rel/prod/bin/prod` to your production machine and run `_build/dev/rel/prod/bin/prod start` to start the server.
+Run `_build/dev/rel/prod/bin/prod remote` to connect to the server remotely.
+Run `_build/dev/rel/prod/bin/prod stop` to stop the server gracefully.

@@ -1,0 +1,16 @@
+FROM elixir:1.11.2-alpine as builder
+WORKDIR /build
+COPY ./lib ./lib
+COPY ./mix.exs ./mix.exs
+COPY ./mix.lock ./mix.lock
+ENV MIX_ENV prod
+RUN mix local.hex --force
+RUN mix local.rebar --force
+RUN mix deps.get --only prod
+RUN mix release
+
+FROM alpine:3.12
+WORKDIR /app
+RUN apk update && apk add ncurses-libs
+COPY --from=builder /build .
+CMD ["./_build/prod/rel/prod/bin/prod", "start"]
