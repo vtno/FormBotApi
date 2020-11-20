@@ -28,3 +28,10 @@ formbot_api-*.tar
 .elixir_ls/
 
 rel/
+
+# For non-root user development in docker
+.gnupg
+.ssh
+.vscode-server
+.gitconfig
+.zshrc
