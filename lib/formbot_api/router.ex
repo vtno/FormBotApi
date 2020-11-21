@@ -2,15 +2,16 @@ import Plug.BasicAuth
 
 defmodule FormbotApi.Router do
   use Plug.Router
+  use FormbotApi
 
-  unless Env.is_test, do: plug(Plug.SSL)
+  unless Env.is_test(), do: plug(Plug.SSL)
   plug(Plug.Logger)
   plug(:basic_auth, Application.compile_env(:formbot_api, :basic_auth))
   plug(:match)
   plug(:dispatch)
 
   get "/auth" do
-    case AuthTokenRepository.find_or_create_token do
+    case AuthTokenRepository.find_or_create_token() do
       {:error, _} -> send_resp(conn, 400, "")
       {:ok, token} -> send_resp(conn, 200, token)
     end

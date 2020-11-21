@@ -1,11 +1,11 @@
-defmodule AuthTokenRepository do
+defmodule FormbotApi.AuthTokenRepository do
   @db_path Application.get_env(:formbot_api, :db_path, "sqlite/dev.db")
 
   def find_token do
     Sqlitex.with_db(@db_path, fn db ->
       Sqlitex.query(
         db,
-        "SELECT token FROM auth_tokens WHERE expired_at > datetime() ORDER BY created_at LIMIT 1"
+        "SELECT token FROM auth_tokens WHERE expired_at > datetime() ORDER BY expired_at LIMIT 1"
       )
     end)
   end
@@ -16,7 +16,7 @@ defmodule AuthTokenRepository do
     Sqlitex.with_db(@db_path, fn db ->
       Sqlitex.query(
         db,
-        "INSERT INTO auth_tokens (token, expired_at, created_at) VALUES (#{token}, datetime(datetime(), \"+1 hour\"), datetime())"
+        "INSERT INTO auth_tokens (token, expired_at, created_at) VALUES ('#{token}', datetime(datetime(), \"+1 hour\"), datetime())"
       )
     end)
 
@@ -31,7 +31,7 @@ defmodule AuthTokenRepository do
   end
 
   def find_or_create_token do
-    case AuthTokenRepository.find_token() do
+    case find_token() do
       {:ok, token} -> {:ok, create_or_return(token)}
       {:error, err} -> {:error, err}
     end

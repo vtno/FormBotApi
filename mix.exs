@@ -30,7 +30,9 @@ defmodule FormbotApi.MixProject do
     [
       {:plug_cowboy, "~> 2.0"},
       {:secure_random, "~> 0.5"},
-      {:sqlitex, "~> 1.7.1"}
+      {:sqlitex, "~> 1.7.1"},
+      {:timex, "~> 3.6.2"},
+      {:mock, "~> 0.3.0", only: :test}
     ]
   end
 end
