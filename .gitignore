@@ -37,3 +37,6 @@ rel/
 .vscode-server
 .gitconfig
 .zshrc
+.cache
+sqlite
+.sqlite_history
