@@ -19,12 +19,14 @@ defmodule FormbotApiTest do
     test "return token when basic auth pass" do
       # Test basic auth: test:test
       mock_token = "token"
-      with_mock FormbotApi.AuthTokenRepository, [find_or_create_token: fn -> { :ok, mock_token } end] do
+
+      with_mock FormbotApi.AuthTokenRepository, find_or_create_token: fn -> {:ok, mock_token} end do
         conn =
           :get
           |> conn("/auth", "")
           |> put_req_header("authorization", "Basic dGVzdDp0ZXN0")
           |> FormbotApi.Router.call(@opts)
+
         assert conn.status == 200
         assert conn.resp_body == mock_token
       end

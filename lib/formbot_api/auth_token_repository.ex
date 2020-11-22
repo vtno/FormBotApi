@@ -26,13 +26,13 @@ defmodule FormbotApi.AuthTokenRepository do
   defp create_or_return(token) do
     case length(token) do
       0 -> create_token()
-      _ -> token[0]
+      _ -> token |> List.first() |> Keyword.fetch(:token)
     end
   end
 
   def find_or_create_token do
     case find_token() do
-      {:ok, token} -> {:ok, create_or_return(token)}
+      {:ok, token} -> create_or_return(token)
       {:error, err} -> {:error, err}
     end
   end

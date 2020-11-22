@@ -3,6 +3,8 @@ defmodule FormbotApi.AuthTokenRepositoryTest do
   use FormbotApi
 
   @db_path Application.get_env(:formbot_api, :db_path, "sqlite/dev.db")
+  @time_format "{YYYY}-{0M}-{D} {h24}:{m}:{s}"
+
   defp create_token(token, datetime) do
     Sqlitex.with_db(@db_path, fn db ->
       Sqlitex.query(
@@ -26,16 +28,33 @@ defmodule FormbotApi.AuthTokenRepositoryTest do
     on_exit(fn -> clear_token() end)
   end
 
-  test "find_or_create should create if no unexpired token" do
+  test "find_or_create should create token if no unexpired token" do
+    yesterday = Timex.format!(Timex.shift(Timex.now(), days: -1), @time_format)
+    expired_token = SecureRandom.hex()
+    create_token(expired_token, yesterday)
+
+    {:ok, token} = AuthTokenRepository.find_or_create_token()
+
+    assert token != nil
+    assert token != expired_token
+  end
+
+  test "find_or_create should NOT create token if there is unexpired token" do
+    tomorrow = Timex.format!(Timex.shift(Timex.now(), days: 1), @time_format)
+    unexpired_token = SecureRandom.hex()
+    create_token(unexpired_token, tomorrow)
+
+    {:ok, token} = AuthTokenRepository.find_or_create_token()
+
+    assert token != nil
+    assert token == unexpired_token
   end
 
   test "find_token should return token if exist an NOT expired" do
-    time_format = "{YYYY}-{0M}-{D} {h24}:{m}:{s}"
-
     now = Timex.now()
-    yesterday = Timex.format!(Timex.shift(now, days: -1), time_format)
-    tomorrow = Timex.format!(Timex.shift(now, days: 1), time_format)
-    day_after_tomorrow = Timex.format!(Timex.shift(now, days: 2), time_format)
+    yesterday = Timex.format!(Timex.shift(now, days: -1), @time_format)
+    tomorrow = Timex.format!(Timex.shift(now, days: 1), @time_format)
+    day_after_tomorrow = Timex.format!(Timex.shift(now, days: 2), @time_format)
 
     token = SecureRandom.hex()
     create_token(SecureRandom.hex(), day_after_tomorrow)

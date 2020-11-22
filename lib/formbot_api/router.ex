@@ -5,7 +5,7 @@ defmodule FormbotApi.Router do
   use FormbotApi
 
   unless Env.is_test(), do: plug(Plug.SSL)
-  plug(Plug.Logger)
+  unless Env.is_test(), do: plug(Plug.Logger)
   plug(:basic_auth, Application.compile_env(:formbot_api, :basic_auth))
   plug(:match)
   plug(:dispatch)
