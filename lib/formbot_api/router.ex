@@ -10,12 +10,10 @@ defmodule FormbotApi.Router do
   plug(:dispatch)
   plug(FormbotApi.Plug.VerifyToken, paths: ["/run-bot"])
 
-  @username if Env.is_test() == "test", do: "test", else: Application.compile_env(:formbot_api, :basic_auth, :username)
-  @password if Env.is_test() == "test", do: "test", else: Application.compile_env(:formbot_api, :basic_auth, :password)
+  @auth if Env.is_test() == "test", do: "test", else: Application.compile_env(:formbot_api, :basic_auth)
 
   defp auth(conn, _) do
-    if conn.request_path == "/auth", do: Plug.BasicAuth.basic_auth(conn, username: @username, password: @password)
-    conn
+    if conn.request_path == "/auth", do: Plug.BasicAuth.basic_auth(conn, username: @auth[:username], password: @auth[:password]), else: conn
   end
 
   get "/auth" do
