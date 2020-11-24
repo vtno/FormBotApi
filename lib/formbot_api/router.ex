@@ -1,14 +1,20 @@
-import Plug.BasicAuth
-
 defmodule FormbotApi.Router do
   use Plug.Router
   use FormbotApi
 
   unless Env.is_test(), do: plug(Plug.SSL)
   unless Env.is_test(), do: plug(Plug.Logger)
-  plug(:basic_auth, Application.compile_env(:formbot_api, :basic_auth))
+
+  plug(:auth)
   plug(:match)
   plug(:dispatch)
+  plug(FormbotApi.Plug.VerifyToken, paths: ["/run-bot"])
+
+  @auth if Env.is_test() == "test", do: "test", else: Application.compile_env(:formbot_api, :basic_auth)
+
+  defp auth(conn, _) do
+    if conn.request_path == "/auth", do: Plug.BasicAuth.basic_auth(conn, username: @auth[:username], password: @auth[:password]), else: conn
+  end
 
   get "/auth" do
     case AuthTokenRepository.find_or_create_token() do

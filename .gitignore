@@ -40,3 +40,5 @@ rel/
 .cache
 sqlite
 .sqlite_history
+.zcompdump
+.zsh_history

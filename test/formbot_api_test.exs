@@ -1,5 +1,5 @@
 defmodule FormbotApiTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case, async: false
   use Plug.Test
 
   import Mock
@@ -29,6 +29,20 @@ defmodule FormbotApiTest do
 
         assert conn.status == 200
         assert conn.resp_body == mock_token
+      end
+    end
+  end
+
+  describe "/run-bot" do
+    test "return 200 if no error" do
+      with_mocks([
+        {FormbotApi.AuthTokenRepository, [], [find_token: fn -> {:ok, "token"} end]},
+        {System, [], [cmd: fn(_, _, _) -> end]}
+      ]) do
+        conn = conn(:get, "/run-bot", "")
+          |> put_req_header("authorization", "token")
+          |> FormbotApi.Router.call(@opts)
+        assert conn.status == 200
       end
     end
   end
