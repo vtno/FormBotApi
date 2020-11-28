@@ -6,16 +6,18 @@ An API to trigger FormBot
 Requires elixir 1.11.2
 
 ```
+# create DB files
+$ ./scripts/create_db.sh
 # install all dependencies
-mix deps.get
+$ mix deps.get
 # start dev server
-mix run --no-halt
+$ mix run --no-halt
 # run test
-mix test
+$ mix test
 ```
 
 ## Docker
-Run `./start_dev_container.sh` to start a dev container. You can connect to it using `vscode-remote: containers` extension.
+Run `.scripts/builddev_container.sh` to build the dev container and run `.scripts/start_dev_container.sh` to start a dev container. You can connect to it using `vscode-remote: containers` extension.
 
 ## Deployment
 Copy `_build/dev/rel/prod/bin/prod` to your production machine and run `_build/dev/rel/prod/bin/prod start` to start the server.
