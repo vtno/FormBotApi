@@ -6,9 +6,9 @@ defmodule FormbotApi.Router do
   unless Env.is_test(), do: plug(Plug.Logger)
 
   plug(:auth)
+  plug(FormbotApi.Plug.VerifyToken, paths: ["/run-bot"])
   plug(:match)
   plug(:dispatch)
-  plug(FormbotApi.Plug.VerifyToken, paths: ["/run-bot"])
 
   @auth if Env.is_test() == "test", do: "test", else: Application.compile_env(:formbot_api, :basic_auth)
 
